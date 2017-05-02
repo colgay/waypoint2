@@ -4,13 +4,12 @@
 #include <memory>
 #include <algorithm>
 
-#include "Header.h"
 #include "Waypoint.h"
 
 class Node
 {
 public:
-	Node(void) {};
+	Node(void);
 	Node(const Vector &pos);
 	virtual ~Node(void);
 

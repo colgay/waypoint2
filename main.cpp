@@ -1,10 +1,9 @@
+#include "main.h"
 #include "amxxmodule.h"
 
 #include "Node.h"
 #include "Waypoint.h"
 #include "Map.h"
-
-static Map s_map;
 
 void OnClientCommand(edict_t *pEntity)
 {
@@ -21,5 +20,11 @@ void OnPlayerPreThink(edict_t *pEntity)
 
 void OnServerDeactivate(void)
 {
-	s_map.Clear();
+	s_map.Clear()
+	SERVER_PRINT("!! server deactivate !!\n");
+}
+
+void OnServerActivate(void)
+{
+	SERVER_PRINT("!! server activate !!\n");
 }

@@ -24,11 +24,14 @@
     <ClInclude Include="Waypoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Map.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\amxxmodule.h">
+      <Filter>SDK Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\amxxmodule.cpp">
+      <Filter>SDK Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

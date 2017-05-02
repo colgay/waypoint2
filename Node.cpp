@@ -1,5 +1,10 @@
-#include "Node.h"
 #include "extdll.h"
+#include "Node.h"
+
+Node::Node(void)
+{
+
+}
 
 Node::Node(const Vector &pos)
 {

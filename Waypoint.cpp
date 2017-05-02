@@ -1,5 +1,5 @@
-#include "Waypoint.h"
 #include "extdll.h"
+#include "Waypoint.h"
 
 Waypoint::Waypoint(const Vector &pos, float radius, int flags)
 {
@@ -7,7 +7,6 @@ Waypoint::Waypoint(const Vector &pos, float radius, int flags)
 	m_radius = radius;
 	m_flags = flags;
 }
-
 
 Waypoint::~Waypoint(void)
 {
