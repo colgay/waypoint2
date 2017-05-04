@@ -15,17 +15,21 @@ Node::~Node()
 {
 }
 
-bool Node::IsChildSet(const shr_ptr<Node> pNode) const
+bool Node::IsChildSet(const std::shared_ptr<Node> pNode) const
 {
 	return std::find(m_children.begin(), m_children.end(), pNode) != m_children.end();
 }
 
-void Node::AddChild(const shr_ptr<Node> pNode)
+bool Node::AddChild(const std::shared_ptr<Node> pNode)
 {
+	if (this->IsChildSet(pNode))
+		return false;
+
 	m_children.push_back(pNode);
+	return true;
 }
 
-void Node::PopChild(const shr_ptr<Node> pNode)
+void Node::PopChild(const std::shared_ptr<Node> pNode)
 {
 	m_children.erase(std::remove(m_children.begin(), m_children.end(), pNode), m_children.end());
 }

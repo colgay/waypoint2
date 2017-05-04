@@ -33,6 +33,9 @@
     <ClInclude Include="sdk\amxxmodule.h">
       <Filter>SDK Files</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Node.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="sdk\amxxmodule.cpp">
       <Filter>SDK Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

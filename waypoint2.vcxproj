@@ -78,6 +78,7 @@
     <ClInclude Include="Node.h" />
     <ClInclude Include="sdk\amxxmodule.h" />
     <ClInclude Include="sdk\moduleconfig.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Waypoint.h" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +86,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="sdk\amxxmodule.cpp" />
+    <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

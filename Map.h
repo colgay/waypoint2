@@ -1,6 +1,10 @@
 #pragma once
 
-#include "Waypoint.h"
+#include <algorithm>
+#include <vector>
+#include <memory>
+
+class Waypoint;
 
 class Map
 {
@@ -8,16 +12,16 @@ public:
 	Map();
 	~Map();
 
-	shr_ptr<Waypoint> CreateWaypoint(const Vector &pos, float radius, int flags);
-	void RemoveWaypoint(shr_ptr<Waypoint> pPoint);
+	std::shared_ptr<Waypoint> CreateWaypoint(const Vector &pos, float radius, int flags);
+	void RemoveWaypoint(std::shared_ptr<Waypoint> pPoint);
 
-	int GetIndex(const shr_ptr<Waypoint> pPoint) const;
-	const shr_ptr<Waypoint> GetWaypointAt(int index) const;
-	const std::vector<shr_ptr<Waypoint>> &GetWaypoints(void) const { return m_waypoints; }
-	const shr_ptr<Waypoint> GetNearestWaypoint(const Vector &pos, float maxRadius) const;
+	int GetIndex(const std::shared_ptr<Waypoint> pPoint) const;
+	const std::shared_ptr<Waypoint> GetWaypointAt(int index) const;
+	std::vector<std::shared_ptr<Waypoint>> &GetWaypoints(void) { return m_waypoints; }
+	const std::shared_ptr<Waypoint> GetNearestWaypoint(const Vector &pos, float maxRadius) const;
 
 	void Clear(void) { m_waypoints.clear(); }
 
 private:
-	std::vector<shr_ptr<Waypoint>> m_waypoints;
+	std::vector<std::shared_ptr<Waypoint>> m_waypoints;
 };

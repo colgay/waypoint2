@@ -1,11 +1,19 @@
 #pragma once
 
-#include <memory>
+#define ADMIN_RCON (1<<11)
 
-template <typename T>
-using shr_ptr = std::shared_ptr<T>;
+extern Map s_map;
+extern edict_t *g_pEditor;
+extern int gmsgTextMsg;
 
-static Map s_map;
-edict_t *g_pEditor;
+extern short g_sprBeam1;
+extern short g_sprBeam4;
+extern short g_sprArrow;
 
-short g_sprBeam1, g_sprBeam4, g_sprArrow;
+void OnClientCommand(edict_t *pEntity);
+
+void OnPlayerPreThink(edict_t *pEntity);
+
+void OnServerActivate_Post(edict_t *pEdictList, int edictCount, int clientMax);
+
+void OnServerDeactivate_Post(void);
