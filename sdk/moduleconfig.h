@@ -77,7 +77,7 @@
 /** AMXX attach
  * Do native functions init here (MF_AddNatives)
  */
-//#define FN_AMXX_ATTACH OnAmxxAttach
+#define FN_AMXX_ATTACH OnAmxxAttach
 
 /** AMXX Detach (unload) */
 //#define FN_AMXX_DETACH OnAmxxDetach

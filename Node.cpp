@@ -11,7 +11,7 @@ Node::Node(const Vector &pos)
 	m_position = pos;
 }
 
-Node::~Node()
+Node::~Node(void)
 {
 }
 

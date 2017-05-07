@@ -9,8 +9,8 @@ class Waypoint;
 class Map
 {
 public:
-	Map();
-	~Map();
+	Map(void);
+	~Map(void);
 
 	std::shared_ptr<Waypoint> CreateWaypoint(const Vector &pos, float radius, int flags);
 	void RemoveWaypoint(std::shared_ptr<Waypoint> pPoint);

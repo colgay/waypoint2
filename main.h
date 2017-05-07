@@ -2,13 +2,14 @@
 
 #define ADMIN_RCON (1<<11)
 
-extern Map s_map;
-extern edict_t *g_pEditor;
-extern int gmsgTextMsg;
-
 extern short g_sprBeam1;
 extern short g_sprBeam4;
 extern short g_sprArrow;
+
+extern int gmsgTextMsg;
+
+extern Map g_map;
+extern edict_t *g_pEditor;
 
 void OnClientCommand(edict_t *pEntity);
 

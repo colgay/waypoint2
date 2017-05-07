@@ -2,11 +2,11 @@
 #include "Map.h"
 #include "Waypoint.h"
 
-Map::Map()
+Map::Map(void)
 {
 }
 
-Map::~Map()
+Map::~Map(void)
 {
 }
 
