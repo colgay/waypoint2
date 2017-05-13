@@ -7,7 +7,11 @@ void UTIL_ClientPrintAll(int msg_dest, const char *msg_name, const char *param1,
 
 void UTIL_ClientPrint(edict_t *client, int msg_dest, const char *msg_name, const char *param1 = (const char*)0, const char *param2 = (const char*)0, const char *param3 = (const char*)0, const char *param4 = (const char*)0);
 
-char* UTIL_VarArgs(const char *format, ...);
+void UTIL_HudMessage(edict_t *pEntity, const hudtextparms_t &textparms, const char *pMessage);
+
+char *UTIL_VarArgs(const char *format, ...);
+
+const char *UTIL_GetWaypointFlagsString(int flags);
 
 int UTIL_ReadFlags(const char* c);
 

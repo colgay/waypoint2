@@ -5,6 +5,10 @@
 
 #include "Node.h"
 
+#define WP_JUMP (1 << 0)
+#define WP_DUCK (1 << 1)
+#define WP_UNWALKABLE (1 << 2)
+
 class Waypoint : public Node
 {
 public:

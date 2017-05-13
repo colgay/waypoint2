@@ -10,10 +10,7 @@
 	}
 
 #define CHECK_WAYPOINT(w, r) \
-	if (w < 0 || w >= g_map.GetWaypoints().size()) { \
-		MF_LogError(amx, AMX_ERR_NATIVE, "Waypoint out of range (%d)", w); \
-		return r; \
-	} else if (g_map.GetWaypointAt(w) == nullptr) { \
+	if (g_map.GetWaypointAt(w) == nullptr) { \
 		MF_LogError(amx, AMX_ERR_NATIVE, "Invalid waypoint %d", w); \
 		return r; \
 	}

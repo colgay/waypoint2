@@ -110,7 +110,7 @@ void OnClientCommand(edict_t *pEntity)
 
 			if (pPoint == pOther)
 			{
-				UTIL_ClientPrint(pEntity, HUD_PRINTTALK, "You cannot connect these points.");
+				UTIL_ClientPrint(pEntity, HUD_PRINTTALK, "You cannot connect these waypoints.");
 				RETURN_META(MRES_SUPERCEDE);
 			}
 
@@ -125,7 +125,7 @@ void OnClientCommand(edict_t *pEntity)
 				}
 				case 1: // In-coming
 				{
-					if (pPoint->AddChild(pOther))
+					if (pOther->AddChild(pPoint))
 						UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("* Connect Waypoint #%d <- #%d", index1, index2));
 
 					break;
@@ -227,6 +227,37 @@ void OnClientCommand(edict_t *pEntity)
 		RETURN_META(MRES_SUPERCEDE);
 	}
 
+	// radius
+	if (strcmp(pszCmd, "childflags") == 0)
+	{
+		int index1 = atoi(CMD_ARGV(2));
+		int index2 = atoi(CMD_ARGV(3));
+		const char *pszFlags = CMD_ARGV(4);
+
+		std::shared_ptr<Waypoint> pPoint = g_map.GetWaypointAt(index1);
+		if (pPoint == nullptr)
+		{
+			UTIL_ClientPrint(pEntity, HUD_PRINTTALK, UTIL_VarArgs("Invalid waypoint #%d", index1));
+			RETURN_META(MRES_SUPERCEDE);
+		}
+
+		std::shared_ptr<Waypoint> pOther = g_map.GetWaypointAt(index2);
+		if (pOther == nullptr)
+		{
+			UTIL_ClientPrint(pEntity, HUD_PRINTTALK, UTIL_VarArgs("Invalid waypoint #%d", index2));
+			RETURN_META(MRES_SUPERCEDE);
+		}
+
+		int flags;
+		if (isdigit(pszFlags[0]))
+			flags = atoi(pszFlags);
+		else
+			flags = UTIL_ReadFlags(pszFlags);
+
+		pPoint->SetChildFlags(pOther, flags);
+		UTIL_ClientPrintAll(HUD_PRINTTALK, UTIL_VarArgs("* Set child flags for #%d -> #%d.", index1, index2));
+	}
+
 	RETURN_META(MRES_IGNORED);
 }
 
@@ -256,7 +287,7 @@ void OnPlayerPreThink(edict_t *pEntity)
 		);
 
 		int color[3];
-		Vector posPt;
+		Vector pos2, pos3, pos4;
 
 		const std::vector<std::shared_ptr<Node>> *pChildren;
 
@@ -268,12 +299,82 @@ void OnPlayerPreThink(edict_t *pEntity)
 		for (std::vector<std::shared_ptr<Waypoint>>::const_iterator it = pWaypoints->cbegin(); it != pWaypoints->cbegin() + end; ++it)
 		{
 			pPoint = *it;
-			posPt = pPoint->GetPos();
+			pos2 = pPoint->GetPos();
 
 			if (pCurrent == pPoint)
 			{
 				color[0] = 255;
 				color[1] = color[2] = 0;
+
+				hudtextparms_t textparms;
+				textparms.a1 = 0;
+				textparms.a2 = 0;
+				textparms.r2 = 255;
+				textparms.g2 = 255;
+				textparms.b2 = 250;
+				textparms.r1 = 0;
+				textparms.g1 = 255;
+				textparms.b1 = 50;
+				textparms.x = 0.35;
+				textparms.y = 0.25;
+				textparms.effect = 0;
+				textparms.fxTime = 0.0;
+				textparms.holdTime = 1.0;
+				textparms.fadeinTime = 0.0;
+				textparms.fadeoutTime = 1.0;
+				textparms.channel = 4;
+
+				// Show waypoint status
+				UTIL_HudMessage(pEntity, textparms,
+					UTIL_VarArgs("Waypoint #%d\nOrigin: {%.2f, %.2f, %.2f}\nRadius: %.1f\nFlags: %s",
+					g_map.GetIndex(pPoint),
+					pPoint->GetPos().x, pPoint->GetPos().y, pPoint->GetPos().z,
+					pPoint->GetRadius(),
+					UTIL_GetWaypointFlagsString(pPoint->GetFlags())));
+
+				// Show waypoint radius
+				if (pPoint->GetRadius() <= 0)
+				{
+					UTIL_BeamPoints(pEntity,
+						Vector(pPoint->GetPos().x + 16, pPoint->GetPos().y, pPoint->GetPos().z - 18),
+						Vector(pPoint->GetPos().x - 16, pPoint->GetPos().y, pPoint->GetPos().z - 18),
+						g_sprBeam4, 0, 0,
+						5, 10, 0,
+						0, 0, 255, 255,
+						0);
+
+					UTIL_BeamPoints(pEntity,
+						Vector(pPoint->GetPos().x, pPoint->GetPos().y + 16, pPoint->GetPos().z - 18),
+						Vector(pPoint->GetPos().x, pPoint->GetPos().y - 16, pPoint->GetPos().z - 18),
+						g_sprBeam4, 0, 0,
+						5, 10, 0,
+						0, 0, 255, 255,
+						0);
+				}
+				else
+				{
+					pos4 = pPoint->GetPos();
+					pos4.x += cos(360 / 6 * 6 - 180) * pPoint->GetRadius();
+					pos4.y += sin((360 / 6 * 6 - 180) * M_PI / 180) * pPoint->GetRadius();
+					pos4.z -= 18;
+
+					for (int i = 1; i <= 6; i++)
+					{
+						pos3 = pPoint->GetPos();
+						pos3.x += cos((360 / 6 * i - 180) * M_PI / 180) * pPoint->GetRadius();
+						pos3.y += sin((360 / 6 * i - 180) * M_PI / 180) * pPoint->GetRadius();
+						pos3.z -= 18;
+
+						UTIL_BeamPoints(pEntity,
+							pos3, pos4,
+							g_sprBeam4, 0, 0,
+							5, 10, 0,
+							0, 0, 255, 255,
+							0);
+
+						pos4 = pos3;
+					}
+				}
 
 				pChildren = &pPoint->GetChildren();
 				for (std::vector<std::shared_ptr<Node>>::const_iterator it2 = pChildren->cbegin(); it2 != pChildren->cend(); ++it2)
@@ -325,7 +426,7 @@ void OnPlayerPreThink(edict_t *pEntity)
 							Vector(pChild->GetPos().x, pChild->GetPos().y, pChild->GetPos().z),
 							g_sprBeam1, 0, 0,
 							5, 10, 4,
-							200, 0, 0, 255,
+							255, 0, 0, 255,
 							0);
 					}
 				}
@@ -349,8 +450,8 @@ void OnPlayerPreThink(edict_t *pEntity)
 
 			// Show waypoint
 			UTIL_BeamPoints(pEntity,
-				Vector(posPt.x, posPt.y, posPt.z - 36),
-				Vector(posPt.x, posPt.y, posPt.z + 36),
+				Vector(pos2.x, pos2.y, pos2.z - 36),
+				Vector(pos2.x, pos2.y, pos2.z + 36),
 				g_sprBeam4, 0, 0,
 				5, 10, 0,
 				color[0], color[1], color[2], 255,
@@ -380,10 +481,13 @@ void OnServerActivate_Post(edict_t *pEdictList, int edictCount, int clientMax)
 	g_sprBeam4 = PRECACHE_MODEL("sprites/zbeam4.spr");
 	g_sprArrow = PRECACHE_MODEL("sprites/arrow1.spr");
 
+	g_pEditor = nullptr;
+
 	SERVER_PRINT("!! server activate !!\n");
 }
 
 void OnServerDeactivate_Post(void)
 {
+	g_map.Clear();
 	SERVER_PRINT("!! server deactivate !!\n");
 }
