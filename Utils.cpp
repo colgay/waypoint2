@@ -147,6 +147,8 @@ const char *UTIL_GetWaypointFlagsString(int flags)
 
 	if (str.length() > 0)
 		str.erase(str.length() - 3, 3);
+	else
+		str.append("None");
 
 	return str.c_str();
 }

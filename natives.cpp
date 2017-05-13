@@ -130,6 +130,39 @@ static cell AMX_NATIVE_CALL wp_GetFlags(AMX *amx, cell *params)
 	return pPoint->GetFlags();
 }
 
+static cell AMX_NATIVE_CALL wp_SetFlags(AMX *amx, cell *params)
+{
+	int index = params[1];
+	CHECK_WAYPOINT(index, false);
+
+	std::shared_ptr<Waypoint> pPoint = g_map.GetWaypointAt(index);
+
+	pPoint->SetFlags(params[2]);
+	return true;
+}
+
+static cell AMX_NATIVE_CALL wp_IsValid(AMX *amx, cell *params)
+{
+	std::shared_ptr<Waypoint> pPoint = g_map.GetWaypointAt(params[1]);
+	if (pPoint == nullptr)
+		return false;
+
+	return true;
+}
+
+static cell AMX_NATIVE_CALL wp_SetRadius(AMX *amx, cell *params)
+{
+	int index = params[1];
+	CHECK_WAYPOINT(index, false);
+
+	std::shared_ptr<Waypoint> pPoint = g_map.GetWaypointAt(index);
+
+	float radius = amx_ctof(params[2]);
+
+	pPoint->SetRadius(radius);
+	return true;
+}
+
 AMX_NATIVE_INFO Waypoint_Natives[] =
 {
 	{ "wp_GetNearestPoint", wp_GetNearestPoint },
@@ -141,6 +174,9 @@ AMX_NATIVE_INFO Waypoint_Natives[] =
 	{ "wp_GetPos", wp_GetPos },
 	{ "wp_GetWaypointCount", wp_GetWaypointCount },
 	{ "wp_GetFlags", wp_GetFlags },
+	{ "wp_SetFlags", wp_SetFlags },
+	{ "wp_SetRadius", wp_SetRadius },
+	{ "wp_IsValid", wp_IsValid },
 
 	{ nullptr, nullptr }
 };

@@ -288,6 +288,7 @@ void OnPlayerPreThink(edict_t *pEntity)
 
 		int color[3];
 		Vector pos2, pos3, pos4;
+		const char *cstr;
 
 		const std::vector<std::shared_ptr<Node>> *pChildren;
 
@@ -312,25 +313,24 @@ void OnPlayerPreThink(edict_t *pEntity)
 				textparms.r2 = 255;
 				textparms.g2 = 255;
 				textparms.b2 = 250;
-				textparms.r1 = 0;
-				textparms.g1 = 255;
-				textparms.b1 = 50;
+				textparms.r1 = 255;
+				textparms.g1 = 0;
+				textparms.b1 = 0;
 				textparms.x = 0.35;
 				textparms.y = 0.25;
 				textparms.effect = 0;
 				textparms.fxTime = 0.0;
-				textparms.holdTime = 1.0;
+				textparms.holdTime = 0.6;
 				textparms.fadeinTime = 0.0;
-				textparms.fadeoutTime = 1.0;
+				textparms.fadeoutTime = 0.5;
 				textparms.channel = 4;
 
 				// Show waypoint status
-				UTIL_HudMessage(pEntity, textparms,
-					UTIL_VarArgs("Waypoint #%d\nOrigin: {%.2f, %.2f, %.2f}\nRadius: %.1f\nFlags: %s",
+				cstr = UTIL_VarArgs("Current Waypoint (RED) #%d\nOrigin: {%.2f, %.2f, %.2f}\nRadius: %.1f\nFlags: %s",
 					g_map.GetIndex(pPoint),
 					pPoint->GetPos().x, pPoint->GetPos().y, pPoint->GetPos().z,
 					pPoint->GetRadius(),
-					UTIL_GetWaypointFlagsString(pPoint->GetFlags())));
+					UTIL_GetWaypointFlagsString(pPoint->GetFlags()));
 
 				// Show waypoint radius
 				if (pPoint->GetRadius() <= 0)
@@ -381,6 +381,11 @@ void OnPlayerPreThink(edict_t *pEntity)
 				{
 					pChild = std::static_pointer_cast<Waypoint>(*it2);
 
+					if (pChild == pAim)
+					{
+						cstr = UTIL_VarArgs("%s\n\n#%d to #%d Flags: %s", cstr, g_map.GetIndex(pCurrent), g_map.GetIndex(pAim), UTIL_GetWaypointFlagsString(pCurrent->GetChildFlags(pAim)));
+					}
+
 					MESSAGE_BEGIN(MSG_ONE_UNRELIABLE, SVC_TEMPENTITY, NULL, pEntity);
 					WRITE_BYTE(TE_BEAMPOINTS);
 					WRITE_COORD(pPoint->GetPos().x);
@@ -396,7 +401,13 @@ void OnPlayerPreThink(edict_t *pEntity)
 					WRITE_BYTE(10);		// width
 					WRITE_BYTE(4);		// noise
 
-					if (pChild->IsChildSet(pPoint))
+					if (pChild == pAim)
+					{
+						WRITE_BYTE(200); // r
+						WRITE_BYTE(200); // g
+						WRITE_BYTE(200); // b
+					}
+					else if (pChild->IsChildSet(pPoint))
 					{
 						WRITE_BYTE(200); // r
 						WRITE_BYTE(200); // g
@@ -430,9 +441,36 @@ void OnPlayerPreThink(edict_t *pEntity)
 							0);
 					}
 				}
+
+				// Show waypoint status
+				UTIL_HudMessage(pEntity, textparms, cstr);
 			}
 			else if (pAim == pPoint)
 			{
+				hudtextparms_t textparms;
+				textparms.a1 = 0;
+				textparms.a2 = 0;
+				textparms.r2 = 255;
+				textparms.g2 = 255;
+				textparms.b2 = 250;
+				textparms.r1 = 200;
+				textparms.g1 = 200;
+				textparms.b1 = 200;
+				textparms.x = 0.35;
+				textparms.y = 0.6;
+				textparms.effect = 0;
+				textparms.fxTime = 0.0;
+				textparms.holdTime = 0.6;
+				textparms.fadeinTime = 0.0;
+				textparms.fadeoutTime = 0.5;
+				textparms.channel = 3;
+
+				UTIL_HudMessage(pEntity, textparms, UTIL_VarArgs("Aiming Waypoint (WHITE) #%d\nOrigin: {%.2f, %.2f, %.2f}\nRadius: %.1f\nFlags: %s",
+					g_map.GetIndex(pPoint),
+					pPoint->GetPos().x, pPoint->GetPos().y, pPoint->GetPos().z,
+					pPoint->GetRadius(),
+					UTIL_GetWaypointFlagsString(pPoint->GetFlags())));
+
 				color[0] = color[1] = color[2] = 255;
 
 				UTIL_BeamPoints(pEntity,
